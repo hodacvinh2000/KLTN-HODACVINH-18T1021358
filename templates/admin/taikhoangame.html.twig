@@ -1,0 +1,90 @@
+{% extends 'base-admin.html.twig' %}
+
+{% block title %}Trang quản lý tài khoản game{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/admin-main.css') }}" />
+    <script src="https://use.fontawesome.com/aef171e47d.js"></script>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/admin-tkgame.js') }}" type="text/javascript"></script>
+{% endblock %}
+
+{% block body %}
+    {% if num_page > 0 %}
+    <div id="list_tkgame" class="table-responsive">
+        <table class="table table-hover">
+            <thead class="thead-dark">
+            <tr>
+                <th>STT</th>
+                <th>Game</th>
+                <th>Tên đăng nhập</th>
+                <th>Ingame</th>
+                <th>Mô tả</th>
+                <th>Giá</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for tkgame in list_tkgame %}
+                <tr id="tkgame{{ tkgame.id }}">
+                    <th scope="row">{{ loop.index }}</th>
+                    <td>{{ tkgame.game.tengame }}</td>
+                    <td>{{ tkgame.username }}</td>
+                    <td>{{ tkgame.ingame }}</td>
+                    <td>{{ tkgame.description| length > 25 ? tkgame.description | slice(0,25) ~ '...' : tkgame.description }}</td>
+                    <td>{{ tkgame.gia }}</td>
+                    <td>
+                        <a href="{{ path('edit_taikhoangame',{'id':tkgame.id}) }}"><button class="btn btn-primary btn-sm">Sửa</button></a>
+                        <button class="btn btn-danger btn-sm" onclick="delete_tkgame({{ tkgame.id }})">Xóa</button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="pagination">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <button class="page-link" id="previous-page">Trước</button>
+            </li>
+            {% for i in 1..num_page%}
+                {% if i <= 5 %}
+                    <li class="page-item">
+                        <button class="page-link" id="pagination-button{{ i }}" onclick="topage({{ i }})">{{ i }}</button>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% if num_page > 5 %}
+                <li class="page-item">
+                    <button class="page-link">...</button>
+                </li>
+            {% endif %}
+            {% if num_page == 1 %}
+                <li class="page-item disabled">
+                    <button class="page-link" id="next-page">Sau</button>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <button class="page-link" id="next-page" onclick="topage(2)">Sau</button>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#pagination-button1').parent().addClass('active');
+        })
+    </script>
+    {% else %}
+        <div class="row"><h3 style="margin: 10% auto;">Không tìm thấy kết quả!</h3></div>
+    {% endif %}
+    {% if message != null %}
+        <script>
+            window.onload = function () {
+                alert("{{ message }}");
+            }
+        </script>
+    {% endif %}
+{% endblock %}

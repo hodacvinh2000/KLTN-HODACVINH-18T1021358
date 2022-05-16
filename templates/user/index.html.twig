@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Thông tin cá nhân{% endblock %}
+
+{% block body %}
+    <div class="content">
+        <form style="width: 30%; margin: 20px auto;" method="post" action="{{ path('update_user') }}">
+            <div class="form-group">
+                <label for="hoten">Họ tên:</label>
+                <input type="text" name="hoten" id="hoten" class="form-control" value="{{ user.hoten }}" required>
+            </div>
+            <div class="form-group">
+                <label for="ngaysinh">Ngày sinh:</label>
+                <input type="date" name="ngaysinh" id="ngaysinh" class="form-control" value="{{ user.ngaysinh | date('Y-m-d','Asia/Ho_Chi_Minh')}}" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" name="email" id="email" class="form-control" value="{{ user.email }}" required>
+                <input type="hidden" name="oldemail" value="{{ user.email }}">
+            </div>
+            <div class="form-group">
+                <label for="sodt">Số điện thoại:</label>
+                <input type="text" name="sodt" id="sodt" class="form-control" value="{{ user.sodt }}" required>
+                <input type="hidden" name="oldsodt" value="{{ user.sodt }}">
+            </div>
+            <div class="form-group">
+                <label for="gioitinh">Giới tính</label>
+                <select name="gioitinh" id="gioitinh" class="form-control">
+                    <option selected>{{ user.gioitinh }}</option>
+                    {% if user.gioitinh == 'Nam' %}
+                    <option>Nữ</option>
+                    {% else %}
+                    <option>Nam</option>
+                    {% endif %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-info">Cập nhật</button>
+        </form>
+    </div>
+    {% if message != "" %}
+        <script>
+            $(document).ready(function () {
+                alert("{{ message }}");
+            })
+        </script>
+    {% endif %}
+{% endblock %}

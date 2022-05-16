@@ -1,0 +1,103 @@
+{% extends 'base-admin.html.twig' %}
+
+{% block title %}Quản lý tài khoản game{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('js/admin-tkgame.js') }}" type="text/javascript"></script>
+{% endblock %}
+{% block body %}
+    {% if taikhoangame != null %}
+        <div class="top nav-bar">
+            <h3 align="center">Cập nhật tài khoản game</h3>
+        </div>
+        <div class="edit-form">
+        <form action="" method="post" enctype="multipart/form-data" style="width: 60%; margin: auto;">
+            <input type="hidden" name="old_username" id="old_username" value="{{ taikhoangame.username }}">
+            <input type="hidden" name="token" value="{{ csrf_token('uploads') }}" />
+            <div class="form-group">
+                <label for="game_id">Game</label>
+                <select name="game_id" id="game_id" class="form-control">
+                    <option value="{{ taikhoangame.game.id }}" selected>{{ taikhoangame.game.tengame }}</option>
+                    {% for game in list_game %}
+                        {% if game.id != taikhoangame.game.id %}
+                            <option value="{{ game.id }}">{{ game.tengame }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="username">Tài khoản</label>
+                <input type="text" name="username" id="username" value="{{ taikhoangame.username }}" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Mật khẩu</label>
+                <input type="password" name="password" id="password" class="form-control" value="{{ taikhoangame.password }}" required>
+                <a href="javascript:void(0)" onclick="show_password()" id="button-password">Hiện mật khẩu</a>
+            </div>
+            <div class="form-group">
+                <label for="gia">Giá</label>
+                <input type="number" name="gia" id="gia" class="form-control" value="{{ taikhoangame.gia }}" required>
+            </div>
+            <div class="form-group">
+                <label for="decription">Mô tả:</label>
+                <textarea name="description" id="decription" class="form-control" style="resize: none; height: 200px;" required>{{ taikhoangame.description }}</textarea>
+            </div>
+            <button type="button" onclick="show_image({{ taikhoangame.id }})" class="btn btn-info btn-sm">Xem ảnh</button>
+            <button type="button" onclick="show_form_add_image()" class="btn btn-secondary btn-sm">Thêm ảnh</button>
+            <div id="img-edit" class="container form-group"></div>
+            <div id="add-image" class="form-group"></div>
+
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
+        </form>
+        </div>
+    {% else %}
+        <div class="top nav-bar">
+            <h3 align="center">Thêm tài khoản game</h3>
+        </div>
+        <div class="edit-form">
+        <form action="{{ path('add_taikhoangame') }}" method="post" enctype="multipart/form-data" style="width: 60%; margin: auto;">
+            <input type="hidden" name="id">
+            <input type="hidden" name="token" value="{{ csrf_token('uploads') }}" />
+            <div class="form-group">
+                <label for="game_id">Game:</label>
+                <select name="game_id" id="game_id" class="form-control">
+                    {% for game in list_game %}
+                        <option value="{{ game.id }}">{{ game.tengame }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="username">Tài khoản:</label>
+                <input type="text" name="username" id="username" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="ingame">Ingame:</label>
+                <input type="text" name="ingame" id="ingame" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Mật khẩu:</label>
+                <input type="password" name="password" id="password" class="form-control" required><a>Hiện mật khẩu</a>
+            </div>
+            <div class="form-group">
+                <lable for="file">Ảnh:</lable>
+                <input type="file" name="file[]" id="file" multiple class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="gia">Giá:</label>
+                <input type="number" min="0" name="gia" id="gia" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="decription">Mô tả:</label>
+                <textarea name="description" id="decription" class="form-control" style="resize: none; height: 200px;" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">Thêm</button>
+        </form>
+    {% endif %}
+    {% if message != "" %}
+        <script>
+            window.onload = function () {
+                alert("{{ message }}");
+            }
+        </script>
+    {% endif %}
+
+{% endblock %}

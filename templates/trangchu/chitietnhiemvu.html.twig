@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chi tiết nhiệm vụ{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/user-nhiemvu.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    {% if app.session.get('current_user') != null %}
+    <input type="hidden" name="current_user" id="current_user" value="{{ app.session.get('current_user').id }}">
+    {% endif %}
+    <div class="content">
+        <div id="info-mission">
+            <h3>{{ nhiemvu.tieude }}</h3>
+            <em>Người đăng: {{ nhiemvu.user.hoten }}</em><br>
+            <em>Game: {{ nhiemvu.game.tengame }}</em><br>
+            <em>Thời gian: {{ nhiemvu.ngaydang|date('d-m-Y') }}</em>
+            <hr>
+            <h5>Nội dung: </h5>
+            <pre>{{ nhiemvu.noidung }}</pre>
+            <hr>
+        </div>
+        <div id="comment-mission">
+            <h5>Bình luận</h5>
+            <div id="list_binhluan">
+                {% for binhluan in list_binhluan %}
+                    <div id="binhluan{{ binhluan.id }}" class="comment">
+                        <i class="fas fa-user"></i> <strong>{{ binhluan.nguoibinhluan.hoten }}</strong>
+                        <br>
+                        <p style="margin: 0px 0px 0px 10px;">{{ binhluan.binhluan }}</p>
+                        <a style="margin-left: 10px;" href="javascript:void(0);" onclick="show_form_traloi({{ binhluan.id }},'{{ binhluan.nguoibinhluan.hoten }}')">Trả lời</a>
+                        {% if app.session.get('current_user').id == binhluan.nguoibinhluan.id %}
+                        <a style="margin-left: 10px;" href="javascript:void(0)" onclick="xoa_binhluan({{ binhluan.id }})">Xóa</a>
+                        {% endif %}
+                        <div id="form-traloi{{ binhluan.id }}"></div>
+                        <div id="xemphanhoi{{ binhluan.id }}" data-text="Xem phản hồi">
+                        {% if binhluan.sophanhoi > 0 %}
+                                <a href="javascript:void(0);" style="margin-left: -20px;" onclick="xem_phanhoi({{ binhluan.id }})">
+                                    <i class="fas fa-reply" style="transform: rotate(180deg);"></i>
+                                    Xem phản hồi
+                                </a>
+                        {% endif %}
+                        </div>
+                        <div id="phanhoi{{ binhluan.id }}" class="phanhoi"></div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div>
+                <input placeholder="Bình luận ở đây" class="form-control" style="width: 97%;border-radius: 20px; display: inline-block;" type="text" name="binhluan" id="form-binhluan" onkeyup="binhluan({{ nhiemvu.id }})">
+                <i class="fas fa-paper-plane" style="font-size: 150%; transform: rotate(45deg);" onclick="binhluan({{ nhiemvu.id }},1)"></i>
+            </div>
+        </div>
+    </div>
+{% endblock %}

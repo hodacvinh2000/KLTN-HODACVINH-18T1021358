@@ -1,0 +1,110 @@
+{% extends 'base-admin.html.twig' %}
+
+{% block title %}Trang quản lý user{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/admin-user.js') }}" type="text/javascript"></script>
+{% endblock %}
+
+{% block body %}
+    {% if user != null %}
+        <div class="top nav-bar">
+            <h3 align="center">Cập nhật User</h3>
+        </div>
+        <div class="edit-form">
+            <form method="post" action="" style="width: 60%; margin: auto;">
+                <input type="hidden" value="{{ user.email }}" name="old_email">
+                <input type="hidden" value="{{ user.sodt }}" name="old_sodt">
+                <input type="hidden" value="{{ user.id }}" name="id" required>
+                <div class="form-group">
+                    <label for="hoten">Họ tên: </label>
+                    <input type="text" name="hoten" id="hoten" value="{{ user.hoten }}" required class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email: </label>
+                    <input type="text" name="email" id="email" value="{{ user.email }}" required class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="sodt">Số điện thoại: </label>
+                    <input type="text" name="sodt" value="{{ user.sodt }}" required class="form-control" id="sodt" required>
+                </div>
+                <div class="form-group">
+                    <label for="ngaysinh">Ngày sinh: </label>
+                    <input type="date" name="ngaysinh" value="{{ user.ngaysinh|date('Y-m-d') }}" required class="form-control" id="ngaysinh" required>
+                </div>
+                <div class="form-group">
+                    <label for="gioitinh">Giới tính: </label>
+                    <select name="gioitinh" id="gioitinh" class="form-control">
+                        <option selected>{{ user.gioitinh }}</option>
+                        {% if user.gioitinh == "Nam" %}
+                            <option>Nữ</option>
+                        {% else %}
+                            <option>Nam</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="matkhau">Mật khẩu: </label>
+                    <input type="password" name="matkhau" id="matkhau" value="{{ user.matkhau }}" required class="form-control" required> <a onclick="button_password()" href="javascript:void(0);" id="button-password">Hiện mật khẩu</a>
+                </div>
+                <div class="form-group">
+                    <lable for="sodu">Số dư: </lable>
+                    <input type="text" name="sodu" value="{{ user.sodu }}" required class="form-control" id="sodu" required>
+                </div>
+                <button class="btn btn-primary" type="submit">Cập nhật</button>
+            </form>
+        </div>
+    {% else %}
+        <div class="top nav-bar">
+            <h3 align="center">Thêm User</h3>
+        </div>
+        <div class="edit-form">
+            <form method="post" action="{{ path('add_user') }}" style="width: 60%; margin: auto;">
+                <input type="hidden"  name="id" required>
+                <div class="form-group">
+                    <label for="tendangnhap">Tên đăng nhập:</label>
+                    <input type="text" name="tendangnhap" required class="form-control" id="tendangnhap" required>
+                </div>
+                <div class="form-group">
+                    <label for="hoten">Họ tên: </label>
+                    <input type="text" name="hoten" required class="form-control" id="hoten" required>
+                </div>
+                <div class="form-group">
+                    <label for="hoten">Email: </label>
+                    <input type="text" name="email" required class="form-control" id="hoten" required>
+                </div>
+                <div class="form-group">
+                    <label for="sodt">Số điện thoại: </label>
+                    <input type="text" name="sodt" required class="form-control" id="sodt" required>
+                </div>
+                <div class="form-group">
+                    <label for="ngaysinh">Ngày sinh: </label>
+                    <input type="date" name="ngaysinh" required class="form-control" id="ngaysinh" required>
+                </div>
+                <div class="form-group">
+                    <label for="gioitinh">Giới tính: </label>
+                    <select name="gioitinh" id="gioitinh" class="form-control">
+                        <option>Nữ</option>
+                        <option>Nam</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="matkhau">Mật khẩu: </label>
+                    <input type="password" name="matkhau" id="matkhau" required class="form-control" id="matkhau" required> <a onclick="button_password()" href="javascript:void(0);" id="button-password">Hiện mật khẩu</a>
+                </div>
+                <div class="form-group">
+                    <lable for="sodu">Số dư: </lable>
+                    <input type="text" name="sodu" required class="form-control" id="sodu" required>
+                </div>
+                <button class="btn btn-success" type="submit">Thêm</button>
+            </form>
+        </div>
+        {% endif %}
+    {% if message != "" %}
+        <script>
+            window.onload = function () {
+                alert('{{ message }}');
+            }
+        </script>
+    {% endif %}
+{% endblock %}

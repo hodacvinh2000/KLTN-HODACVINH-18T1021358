@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nhiệm vụ của tôi{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/my_mission.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+{#    <div>#}
+{#        <a href="{{ path('add_mission_user') }}"><button class="btn btn-success">Thêm nhiệm vụ</button></a>#}
+{#        <input type="text" name="search-nhiemvu" id="search-nhiemvu" class="form-control" style="width: 300px;float: right">#}
+{#    </div>#}
+    <div class="content">
+        <div class="table-head">
+            <h4 align="center" style="margin-top: 15px;">Nhiệm vụ của tôi</h4>
+            <a href="{{ path('add_mission_user') }}"><button class="btn btn-success" style="position: relative; top:-35px; left: 15px;">Thêm nhiệm vụ</button></a>
+        </div>
+        <div id="list_nhiemvu" class="table-responsive">
+            <table class="table table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <th>STT</th>
+                    <th>Tiêu đề</th>
+                    <th>Game</th>
+                    <th>Nội dung</th>
+                    <th>Ngày đăng</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for nhiemvu in list_nhiemvu %}
+                <tr id="nhiemvu{{ nhiemvu.id }}">
+                    <th scope="row">{{ loop.index }}</th>
+                    <td>{{ nhiemvu.tieude| length > 20 ? nhiemvu.tieude | slice(0,20) ~ '...' : nhiemvu.tieude}}</td>
+                    <td>{{ nhiemvu.game.tengame }}</td>
+                    <td>{{ nhiemvu.noidung| length > 25 ? nhiemvu.noidung | slice(0,25) ~ '...' : nhiemvu.noidung}}</td>
+                    <td>{{ nhiemvu.ngaydang | date('d-m-Y') }}</td>
+                    {% if nhiemvu.trangthai == 0 %}
+                        <td>Chờ duyệt</td>
+                        <td>
+                            <a href="{{ path('edit_mission_user',{id:nhiemvu.id}) }}"><button class="btn btn-primary">Sửa</button></a>
+                            <button class="btn btn-warning" onclick="huydang({{ nhiemvu.id }})">Hủy đăng</button>
+                        </td>
+                    {% elseif nhiemvu.trangthai == 1 %}
+                        <td>Đang đăng</td>
+                        <td>
+                            <a href="{{ path('edit_mission_user',{id:nhiemvu.id}) }}"><button class="btn btn-primary">Sửa</button></a>
+                            <button class="btn btn-success" onclick="daxong({{ nhiemvu.id }})">Đã xong</button>
+                        </td>
+                    {% elseif nhiemvu.trangthai == -1 %}
+                        <td>Bị hủy</td>
+                        <td></td>
+                    {% elseif nhiemvu.trangthai == -2 %}
+                        <td>Hết hạn</td>
+                        <td></td>
+                    {% elseif nhiemvu.trangthai == -3 %}
+                        <td>Đã hoàn thành</td>
+                        <td></td>
+                    {% endif %}
+                    {% endfor %}
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="pagination">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <button class="page-link" id="previous-page">Trước</button>
+                </li>
+                {% for i in 1..num_page%}
+                    {% if i <= 5 %}
+                        <li class="page-item">
+                            <button class="page-link" id="pagination-button{{ i }}" onclick="topage({{ i }})">{{ i }}</button>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                {% if num_page > 5 %}
+                    <li class="page-item">
+                        <button class="page-link">...</button>
+                    </li>
+                {% endif %}
+                {% if num_page == 1 %}
+                    <li class="page-item disabled">
+                        <button class="page-link" id="next-page">Sau</button>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <button class="page-link" id="next-page" onclick="topage(2)">Sau</button>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+        <script>
+            $(document).ready(function () {
+                $('#pagination-button1').parent().addClass('active');
+            })
+        </script>
+    </div>
+    {% if message != "" %}
+        <script>
+            window.onload = function () {
+                alert("{{ message }}")
+            }
+        </script>
+    {% endif %}
+{% endblock %}

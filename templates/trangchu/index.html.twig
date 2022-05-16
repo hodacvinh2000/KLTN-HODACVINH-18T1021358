@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trang chủ{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/user-nhiemvu.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div id="list_nhiemvu" class="content">
+        {% if num_page > 0 %}
+        <table class="table table-hover">
+            {% for nhiemvu in list_nhiemvu %}
+                <tr onclick="chitietnhiemvu({{ nhiemvu.id }})">
+                    <td>
+                        <div class="mission" id="mission{{ nhiemvu.id }}">
+                            <h5><i class="fas fa-gamepad" style="font-size: 120%;"></i> {{ nhiemvu.tieude| length > 120 ? nhiemvu.tieude | slice(0,120) ~ '...' : nhiemvu.tieude}}</h5>
+                            <h6><em>Ngày {{ nhiemvu.ngaydang | date('d-m-Y') }} | {{ nhiemvu.user.hoten }} | {{ nhiemvu.game.tengame }}</em></h6>
+                            <p>Nội dung: {{ nhiemvu.noidung| length > 120 ? nhiemvu.noidung | slice(0,120) ~ '...' : nhiemvu.noidung}}</p>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div id="pagination">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <button class="page-link" id="previous-page">Trước</button>
+                </li>
+                {% for i in 1..num_page%}
+                    {% if i <= 5 %}
+                        <li class="page-item">
+                            <button class="page-link" id="pagination-button{{ i }}" onclick="topage({{ i }})">{{ i }}</button>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                {% if num_page > 5 %}
+                    <li class="page-item">
+                        <button class="page-link">...</button>
+                    </li>
+                {% endif %}
+                {% if num_page == 1 %}
+                    <li class="page-item disabled">
+                        <button class="page-link" id="next-page">Sau</button>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <button class="page-link" id="next-page" onclick="topage(2)">Sau</button>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+        <script>
+            $(document).ready(function () {
+                $('#pagination-button1').parent().addClass('active');
+            })
+        </script>
+        {% else %}
+            <div class="row"><h3 style="margin: 10% auto;">Không tìm thấy kết quả!</h3></div>
+        {% endif %}
+    </div>
+{% endblock %}

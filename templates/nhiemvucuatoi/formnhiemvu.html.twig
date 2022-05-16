@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trang chủ{% endblock %}
+
+{% block body %}
+    <div class="content">
+    {% if nhiemvu != null %}
+        <form method="post" style="width: 40%; margin: 20px auto;">
+            <div class="form-group">
+                <label for="tieude">Tiêu đề</label>
+                <input type="text" class="form-control" id="tieude" name="tieude" value="{{ nhiemvu.tieude }}">
+            </div>
+            <div class="form-group">
+                <label for="game_id">Game:</label>
+                <select name="game_id" id="game_id" class="form-control">
+                    <option value="{{ nhiemvu.game.id }}" selected>{{ nhiemvu.game.tengame }}</option>
+                    {% for game in list_game %}
+                        {% if game.id != nhiemvu.game.id %}
+                            <option value="{{ game.id }}">{{ game.tengame }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="noidung">Nội dung:</label>
+                <textarea name="noidung" id="noidung" class="form-control" placeholder="Nhập nội dung ở đây" style="width: 100%;height: 300px;resize: none">{{ nhiemvu.noidung }}</textarea>
+            </div>
+            <input type="submit" name="submit" value="Cập nhật" class="btn btn-info">
+        </form>
+    {% else %}
+        <form method="post" style="width: 40%; margin: 20px auto;">
+            <div class="form-group">
+                <label for="tieude">Tiêu đề:</label>
+                <input type="text" name="tieude" id="tieude" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="game_id">Game:</label>
+                <select name="game_id" id="game_id" class="form-control">
+                    {% for game in list_game %}
+                        <option value="{{ game.id }}">{{ game.tengame }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="noidung">Nội dung:</label>
+                <textarea class="form-control" id="noidung" name="noidung" placeholder="Nhập nội dung ở đây" style="width: 100%;height: 300px;resize: none"></textarea>
+            </div>
+            <input type="submit" name="submit" value="Đăng nhiệm vụ" class="btn btn-info">
+        </form>
+    {% endif %}
+    </div>
+{% endblock %}

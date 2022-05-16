@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Kích hoạt tài khoản{% endblock %}
+
+{% block body %}
+    <div class="content">
+        <form style="width: 30%; margin: 20px auto;" method="post" action="{{ path('verticalEmail') }}">
+            <div class="form-group">
+                <label for="code">Mã xác nhận: </label>
+                <input type="text" name="code" id="code" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success" name="submit">Xác nhận</button>
+        </form>
+        <button type="submit" onclick="sendCode()" class="btn btn-secondary" style="position: relative; left:490px; top:-58px;" name="sendCode">Gửi mã</button>
+    </div>
+    {% if message != "" %}
+        <script>
+            $(document).ready(function () {
+                alert("{{ message }}");
+            })
+        </script>
+    {% endif %}
+    <script>
+        $.ajax({
+            url: `/sendCode`,
+            type: `POST`,
+            dataType: `json`,
+            async: true,
+
+            success: function (data, status) {
+                alert("Mã đã được gửi đi. Hãy kiểm tra email của bạn!");
+            },
+
+            error: function (xhr, textStatus, errorThrown) {
+                console.log('Lỗi ajax');
+            }
+        });
+    </script>
+{% endblock %}

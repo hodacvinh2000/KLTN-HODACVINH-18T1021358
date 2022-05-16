@@ -1,0 +1,52 @@
+.top:after {
+    clear: both;
+    display: table;
+    content: "";
+}
+.top li {
+    float: right;
+    list-style-type: none;
+    margin: 0% 2% 0% 2%;
+}
+.top img {
+    float: left;
+}
+.top ul {
+    float: right;
+    width: 50%;
+    margin: 1.5% 0% 1.5% 20%;
+    font-size: 150%;
+}
+.content {
+    border: 2px solid #17a2b8;
+    background-color: #E8E8E8;
+}
+.mission {
+    margin-left: 20px;
+}
+#info-mission {
+    margin: 20px;
+}
+#comment-mission {
+    margin: 20px;
+}
+#comment-mission a {
+    color: black;
+}
+.comment {
+    margin-bottom: 10px;
+    margin-left: 10px;
+    background-color: #FFFFFF;
+    border-radius: 30px;
+    padding: 10px 20px 10px 30px;
+}
+.feedback {
+    margin-left: -10px;
+    margin-bottom: -10px;
+}
+.account-description {
+    margin: 10px 0px 10px 50px;
+}
+.table-head {
+    height: 55px;
+}
