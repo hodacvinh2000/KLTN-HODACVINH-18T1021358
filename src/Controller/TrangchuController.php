@@ -227,9 +227,15 @@ class TrangchuController extends AbstractController
     public function xoabinhluan(BinhluannhiemvuRepository $binhluannhiemvuRepository, Request $request, $id) {
         if ($this->session->get('current_user')==null) return $this->redirectToRoute('login_user');
         if ($request->isXmlHttpRequest()) {
-            $binhluan_answered = $binhluannhiemvuRepository->findOneBy(['id'=>$binhluannhiemvuRepository->findOneBy(['id'=>$id])->getPhanhoi()->getId()]);
+            $sophanhoi = 0;
+            $parent_id = null;
+            if ($binhluannhiemvuRepository->findOneBy(['id'=>$id])->getPhanhoi() != null) {
+                $binhluan_answered = $binhluannhiemvuRepository->findOneBy(['id'=>$binhluannhiemvuRepository->findOneBy(['id'=>$id])->getPhanhoi()->getId()]);
+                $sophanhoi = $binhluan_answered->getSophanhoi();
+                $parent_id = $binhluan_answered->getId();
+            }
             $binhluannhiemvuRepository->xoabinhluan($id);
-            $jsonData = array('status'=>1,'sophanhoi_parent'=>$binhluan_answered->getSophanhoi(),'id_parent'=>$binhluan_answered->getId());
+            $jsonData = array('status'=>1,'sophanhoi_parent'=>$sophanhoi,'id_parent'=>$parent_id);
             return new JsonResponse($jsonData);
         }
     }
@@ -285,7 +291,7 @@ class TrangchuController extends AbstractController
      * @param Request $request
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function danhsach_tkgame(TaikhoangameRepository $taikhoangameRepository, $id, Request $request){
+    public function danhsach_tkgame(TaikhoangameRepository $taikhoangameRepository, GameRepository $gameRepository, $id, Request $request){
         $count_row = $taikhoangameRepository->count_row_game($id,"");
         if ($count_row/8 > (float)((int)($count_row/8))) $num_page = (int)($count_row/8)+1;
         else $num_page = (int)($count_row/8);
@@ -318,8 +324,9 @@ class TrangchuController extends AbstractController
         }
         else {
             $list_tkgame = $taikhoangameRepository->get_list_game($id,1,8);
+            $game = $gameRepository->findOneBy(['id'=>$id]);
             return $this->render('trangchu/taikhoangame.html.twig', [
-                'list_tkgame' => $list_tkgame,'num_page'=>$num_page,'page'=>1,'id'=>$id]);
+                'list_tkgame' => $list_tkgame,'num_page'=>$num_page,'page'=>1,'id'=>$id,'game'=>$game]);
         }
     }
 

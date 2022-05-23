@@ -21,6 +21,11 @@ class ThegameRepository extends ServiceEntityRepository
         parent::__construct($registry, Thegame::class);
         $this->entity = $this->getEntityManager();
     }
+    public function getAll_game($id) {
+        return $this->createQueryBuilder('t')
+        ->where('t.game=:id')
+        ->setParameter('id',$id)->getQuery()->getResult();
+    }
     public function count_row($keyword) {
         $list_game = $this->entity->getRepository(Game::class)->search_like($keyword);
         $query =  $this->createQueryBuilder('t')

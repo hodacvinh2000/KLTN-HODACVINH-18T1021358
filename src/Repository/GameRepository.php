@@ -3,6 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Game;
+use App\Entity\Taikhoangame;
+use App\Entity\Thegame;
+use App\Entity\Nhiemvu;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,9 +17,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class GameRepository extends ServiceEntityRepository
 {
+    protected $entity;
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Game::class);
+        $this->entity = $this->getEntityManager();
     }
     public function get_all() {
         return $this->createQueryBuilder('game')
@@ -47,20 +52,30 @@ class GameRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
-    public function edit($id, $tengame) {
+    public function edit($id, $tengame, $filename) {
         $game = $this->findOneBy(array('id'=>$id));
         $game->setTengame($tengame);
+        if ($filename != null) {
+            $game->setAnh('/images/'.$filename);
+        }
         $this->_em->flush();
     }
     public function delete($id) {
-        $game = $this->findOneBy(array('id'=>$id));
-        $this->_em->remove($game);
-        $this->_em->flush();
+        $listTkGame = $this->entity->getRepository(Taikhoangame::class)->getAll_game($id);
+        $listThegame = $this->entity->getRepository(Thegame::class)->getAll_game($id);
+        $listNhiemvu = $this->entity->getRepository(Nhiemvu::class)->getAll_game($id);
+        if (count($listTkGame) == 0 && count($listThegame) == 0 && count($listNhiemvu) == 0) {
+            $game = $this->findOneBy(array('id'=>$id));
+            $this->_em->remove($game);
+            $this->_em->flush();
+            return 1;
+        }
+        else return 0;
     }
-    public function add($tengame) {
+    public function add($tengame,$filename) {
         $game = new Game();
         $game->setTengame($tengame);
-        $game->setAnh('');
+        $game->setAnh('/images/'.$filename);
         $this->_em->persist($game);
         $this->_em->flush();
     }

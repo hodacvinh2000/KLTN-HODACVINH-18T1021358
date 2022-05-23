@@ -16,6 +16,7 @@
             <h4 align="center" style="margin-top: 15px;">Nhiệm vụ của tôi</h4>
             <a href="{{ path('add_mission_user') }}"><button class="btn btn-success" style="position: relative; top:-35px; left: 15px;">Thêm nhiệm vụ</button></a>
         </div>
+        {% if num_page > 0 %}
         <div id="list_nhiemvu" class="table-responsive">
             <table class="table table-hover">
                 <thead class="thead-dark">
@@ -98,6 +99,9 @@
             })
         </script>
     </div>
+    {% else %}
+        <div class="row"><h3 style="margin: 10% auto;">Không có nhiệm vụ nào!</h3></div>
+    {% endif %}
     {% if message != "" %}
         <script>
             window.onload = function () {

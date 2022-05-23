@@ -31,7 +31,7 @@
             <div class="form-group">
                 <label for="password">Mật khẩu</label>
                 <input type="password" name="password" id="password" class="form-control" value="{{ taikhoangame.password }}" required>
-                <a href="javascript:void(0)" onclick="show_password()" id="button-password">Hiện mật khẩu</a>
+                <a onclick="button_password()" href="javascript:void(0);" id="button-password">Hiện mật khẩu</a>
             </div>
             <div class="form-group">
                 <label for="gia">Giá</label>
@@ -75,7 +75,8 @@
             </div>
             <div class="form-group">
                 <label for="password">Mật khẩu:</label>
-                <input type="password" name="password" id="password" class="form-control" required><a>Hiện mật khẩu</a>
+                <input type="password" name="password" id="password" class="form-control" required>
+                <a onclick="button_password()" href="javascript:void(0);" id="button-password">Hiện mật khẩu</a>
             </div>
             <div class="form-group">
                 <lable for="file">Ảnh:</lable>

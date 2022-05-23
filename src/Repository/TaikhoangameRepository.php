@@ -23,6 +23,11 @@ class TaikhoangameRepository extends ServiceEntityRepository
         parent::__construct($registry, Taikhoangame::class);
         $this->entity = $this->getEntityManager();
     }
+    public function getAll_game($id) {
+        return $this->createQueryBuilder('tkgame')
+        ->where('tkgame.game=:id')
+        ->setParameter('id',$id)->getQuery()->getResult();
+    }
     public function add($game_id,$username,$ingame,$password,$description,$gia) {
         $conn = $this->_em->getConnection();
         $account = $this->findOneBy(['username'=>$username,'game'=>$game_id]);
@@ -30,7 +35,7 @@ class TaikhoangameRepository extends ServiceEntityRepository
             return -1;
         }
         else {
-            $conn->insert('taikhoangame',['game_id'=>$game_id,'username'=>$username,'ingame'=>$ingame,'password'=>$password,'description'=>$description,'gia'=>$gia]);
+            $conn->insert('taikhoangame',['game_id'=>$game_id,'username'=>$username,'ingame'=>$ingame,'password'=>$password,'description'=>$description,'gia'=>$gia,'status'=>1]);
             return 1;
         }
     }

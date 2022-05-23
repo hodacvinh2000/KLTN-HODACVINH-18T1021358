@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Game;
 use App\Entity\Thegame;
+use App\Entity\Binhluannhiemvu;
 use App\Repository\AdminRepository;
 use App\Repository\AnhRepository;
 use App\Repository\GameRepository;
 use App\Repository\NhiemvuRepository;
+use App\Repository\BinhluannhiemvuRepository;
 use App\Repository\TaikhoangameRepository;
 use App\Repository\ThegameRepository;
 use App\Service\FileUploader;
@@ -238,8 +240,7 @@ class AdminController extends AbstractController
         $current_admin = $session->get('admin');
         if ($current_admin == null) return $this->redirectToRoute('admin_login');
         if ($request->isMethod("POST")) {
-            $userRepository->delete($id);
-            $jsonData = array('status'=>1);
+            $jsonData = array('status'=>$userRepository->delete($id));
             return new JsonResponse($jsonData);
         }
     }
@@ -342,14 +343,33 @@ class AdminController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function edit_game_admin(GameRepository $gameRepository, $id, Request $request, Session $session)
+    public function edit_game_admin(GameRepository $gameRepository, $id, Request $request, Session $session,string $uploadDir,
+    FileUploader $uploader, LoggerInterface $logger)
     {
         $current_admin = $session->get('admin');
         if ($current_admin == null) return $this->redirectToRoute('admin_login');
+        $game = $gameRepository->findOneBy(['id'=>$id]);
         if ($request->isMethod("POST")) {
             $id = $request->get('id');
             $tengame = $request->get('tengame');
-            $gameRepository->edit($id,$tengame);
+            $file = $request->files->get('file');
+            if (!empty($file)) {
+                $allowed = array("jpg" => "images/jpg", "jpeg" => "images/jpeg", "gif" => "images/gif", "png" => "images/png");
+                // Xác minh phần mở rộng tệp
+                $filename = $file->getClientOriginalName();
+                    $ext = pathinfo($filename, PATHINFO_EXTENSION);
+                    if(!array_key_exists($ext, $allowed)) {
+                        $message = "Lỗi: Định dạng file ảnh không hợp lệ!";
+                        return $this->render('admin/form_game.html.twig', ['game'=>null,'message'=>$message]);
+                    }
+                $ext = pathinfo($filename, PATHINFO_EXTENSION);
+                $filename = $tengame.'.'.$ext;
+                $uploader->upload($uploadDir, $file, $filename);
+                $gameRepository->edit($id,$tengame,$filename);
+                $session->set('message',"Cập nhật game thành công!");
+                return $this->redirectToRoute('quanly_game');
+            }
+            $gameRepository->edit($id,$tengame,null);
             $this->session->set('message','Cập nhật game thành công!');
             return $this->redirectToRoute('quanly_game');
         }
@@ -372,15 +392,7 @@ class AdminController extends AbstractController
         $current_admin = $session->get('admin');
         if ($current_admin == null) return $this->redirectToRoute('admin_login');
         if ($request->isXmlHttpRequest()) {
-            $jsonData = array();
-            if ($nhiemvuRepository->get_list_for_game($id))
-            {
-                $jsonData = array('status'=>0);
-            }
-            else {
-                $gameRepository->delete($id);
-                $jsonData = array('status'=>1);
-            }
+            $jsonData = array('status'=>$gameRepository->delete($id));
             return new JsonResponse($jsonData);
         }
     }
@@ -392,14 +404,40 @@ class AdminController extends AbstractController
      * @param Session $session
      * @return Response
      */
-    public function add_game(Request $request, GameRepository $gameRepository, Session $session) {
+    public function add_game(Request $request, GameRepository $gameRepository, Session $session,string $uploadDir,
+    FileUploader $uploader, LoggerInterface $logger) {
         $current_admin = $session->get('admin');
         if ($current_admin == null) return $this->redirectToRoute('admin_login');
         if ($request->isMethod("POST")) {
+            $token = $request->get("token");
+
+            if (!$this->isCsrfTokenValid('uploads', $token))
+            {
+                $logger->info("CSRF failure");
+                $message = "Operation not allowed";
+                return $this->render('admin/form_taikhoangame.html.twig', ['taikhoangame'=>null,'message'=>$message,'list_game'=>$list_game]);
+            }
             $tengame = $request->get('tengame');
-            $gameRepository->add($tengame);
-            $session->set('message',"Thêm game thành công!");
-            return $this->redirectToRoute('quanly_game');
+            $file = $request->files->get('file');
+            if (!empty($file)) {
+                $allowed = array("jpg" => "images/jpg", "jpeg" => "images/jpeg", "gif" => "images/gif", "png" => "images/png");
+                // Xác minh phần mở rộng tệp
+                $filename = $file->getClientOriginalName();
+                    $ext = pathinfo($filename, PATHINFO_EXTENSION);
+                    if(!array_key_exists($ext, $allowed)) {
+                        $message = "Lỗi: Định dạng file ảnh không hợp lệ!";
+                        return $this->render('admin/form_game.html.twig', ['game'=>null,'message'=>$message]);
+                    }
+                $ext = pathinfo($filename, PATHINFO_EXTENSION);
+                $filename = $tengame.'.'.$ext;
+                $uploader->upload($uploadDir, $file, $filename);
+                $gameRepository->add($tengame,$filename);
+                $session->set('message',"Thêm game thành công!");
+                return $this->redirectToRoute('quanly_game');
+            }
+            else {
+                return $this->render('admin/form_game.html.twig', ['game'=>null,'message'=>'Chưa thêm ảnh của game!']);
+            }
         }
         else {
             return $this->render('admin/form_game.html.twig', ['game'=>null,'message'=>""]);
@@ -953,10 +991,10 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/test",name="test")
+     * @Route("/test/{id}",name="test")
      * @param TaikhoangameRepository $taikhoangameRepository
      */
-    public function test(TaikhoangameRepository $taikhoangameRepository) {
-        return new Response('ádasd');
+    public function test(NhiemvuRepository $nhiemvuRepository, $id) {
+        $nhiemvuRepository->delete_nhiemvu($id);
     }
 }

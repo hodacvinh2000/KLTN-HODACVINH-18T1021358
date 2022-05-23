@@ -14,7 +14,7 @@
                 {% for tkgame in list_tkgame %}
                     <div id="game{{ tkgame.id }}" class="col-12 col-md-3 col-lg-3" style="margin-bottom: 15px;">
                         <a href="{{ path('account_info',{id:tkgame.id}) }}">
-                            <img src="/images/games/{{ tkgame.game.id }}.jpg"  style="width: 100%; height: 180px;">
+                            <img src="{{ game.anh }}"  style="width: 100%; height: 180px;">
                         </a>
                         <div>
                             <h5 align="center">{{ tkgame.ingame }}</h5>

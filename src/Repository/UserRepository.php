@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Entity\Nhiemvu;
+use App\Entity\Binhluannhiemvu;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Validator\Constraints\Date;
@@ -15,9 +17,11 @@ use Symfony\Component\Validator\Constraints\Date;
  */
 class UserRepository extends ServiceEntityRepository
 {
+    protected $entity;
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
+        $this->entity = $this->getEntityManager();
     }
     // ham kiem tra dang nhap
     public function check_login($tendangnhap, $matkhau): ?User
@@ -125,9 +129,17 @@ class UserRepository extends ServiceEntityRepository
 
     }
     public function delete($id) {
-        $user = $this->getById($id);
-        $this->_em->remove($user);
-        return $this->_em->flush();
+        $listNhiemvu = $this->entity->getRepository(Nhiemvu::class)->getAll_id($id);
+        $listBinhluan = $this->entity->getRepository(Binhluannhiemvu::class)->getAll_id($id);
+        if (count($listNhiemvu) == 0 && count($listBinhluan) == 0) {
+            $user = $this->getById($id);
+            $this->_em->remove($user);
+            $this->_em->flush();
+            return 1;
+        }
+        else {
+            return 0;
+        }
     }
     public function add($tendangnhap, $matkhau, $hoten, $ngaysinh, $email, $sodt, $gioitinh, $sodu) {
         date_default_timezone_set('Asia/Ho_Chi_Minh');

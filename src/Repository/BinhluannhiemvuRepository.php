@@ -20,6 +20,35 @@ class BinhluannhiemvuRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Binhluannhiemvu::class);
     }
+    public function delete_allcomment($id) {
+        $listComment = $this->createQueryBuilder('bl')
+        ->where('bl.nhiemvu=:id')
+        ->setParameter('id',$id)
+        ->getQuery()->getResult();
+        foreach ($listComment as $comment) {
+            $this->delete_allFeedback($comment->getId());
+            $this->_em->remove($comment);
+        }
+        $this->_em->flush();
+    }
+    public function delete_allFeedback($id) {
+        $listFeedback = $this->createQueryBuilder('bl')
+        ->where('bl.phanhoi=:id')
+        ->setParameter('id',$id)->getQuery()->getResult();
+        foreach ($listFeedback as $feedback) {
+            if ($feedback->getPhanhoi() != null) {
+                $this->delete_allFeedback($feedback->getId());
+            }
+            $this->_em->remove($feedback);
+        }
+        $this->_em->flush();
+    }
+    public function getAll_id($id) {
+        return $this->createQueryBuilder('bl')
+            ->where('bl.nguoibinhluan=:id')
+            ->setParameter('id',$id)
+            ->getQuery()->getResult();
+    }
     public function danhsach_binhluan($id)
     {
         return $this->createQueryBuilder('bl')
@@ -65,8 +94,10 @@ class BinhluannhiemvuRepository extends ServiceEntityRepository
                 $this->xoabinhluan($phanhoi->getId());
             }
         }
-        $binhluan_answered = $this->findOneBy(['id'=>$binhluan->getPhanhoi()->getId()]);
-        $binhluan_answered->setSophanhoi($binhluan_answered->getSophanhoi()-1);
+        if ($binhluan->getPhanhoi() != null) {
+            $binhluan_answered = $this->findOneBy(['id'=>$binhluan->getPhanhoi()->getId()]);
+            $binhluan_answered->setSophanhoi($binhluan_answered->getSophanhoi()-1);
+        }
         $this->_em->remove($binhluan);
         $this->_em->flush();
     }

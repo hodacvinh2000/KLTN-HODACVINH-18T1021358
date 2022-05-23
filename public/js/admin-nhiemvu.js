@@ -45,7 +45,7 @@ function danhsach_nhiemvu(data) {
         nhiemvu = data[i];
         var id = nhiemvu['id'];
         var date = new Date(nhiemvu['ngaydang'].date);
-        content += `<tr id="nhiemvu` + nhiemvu['id'] + `" onclick="chitietnhiemvu(`+ nhiemvu['id'] +`)">
+        content += `<tr id="nhiemvu` + nhiemvu['id'] + `">
                 <th scope="row">` + i + `</th>
                 <td>` + (nhiemvu['tieude'].length > 20 ? (nhiemvu['tieude'].slice(0, 20) + "...") : nhiemvu['tieude']) + `</td>
                 <td>` + nhiemvu['hoten'] + `</td>
@@ -56,22 +56,27 @@ function danhsach_nhiemvu(data) {
                     <td>
                         <button class="btn btn-success btn-sm" onclick="duyet_nhiemvu(` + id + `)">Duyệt</button>
                         <button class="btn btn-warning btn-sm" onclick="huy_nhiemvu(` + id + `)">Hủy</button>
+                        <button class="btn btn-primary btn-sm" onclick="chitietnhiemvu(` + id + `)">Sửa</button>
                     </td>\n`;
         else if (nhiemvu['trangthai'] == '1') content += `<td>Đang đăng</td>
                     <td>
                         <button class="btn btn-danger btn-sm" onclick="delete_nhiemvu(` + id + `)">Xóa</button>
+                        <button class="btn btn-primary btn-sm" onclick="chitietnhiemvu(` + id + `)">Sửa</button>
                     </td>`;
         else if (nhiemvu['trangthai'] == '-1') content += `<td>Bị hủy</td>
                     <td>
                         <button class="btn btn-danger btn-sm" onclick="delete_nhiemvu(` + id + `)">Xóa</button>
+                        <button class="btn btn-primary btn-sm" onclick="chitietnhiemvu(` + id + `)">Sửa</button>
                     </td>`;
         else if (nhiemvu['trangthai'] == '-2') content += `<td>Hết hạn</td>
                     <td>
                         <button class="btn btn-danger btn-sm" onclick="delete_nhiemvu(` + id + `)">Xóa</button>
+                        <button class="btn btn-primary btn-sm" onclick="chitietnhiemvu(` + id + `)">Sửa</button>
                     </td>`;
         else if (nhiemvu['trangthai'] == '-3') content += `<td>Đã hoàn thành</td>
                     <td>
                         <button class="btn btn-danger btn-sm" onclick="delete_nhiemvu(` + id + `)">Xóa</button>
+                        <button class="btn btn-primary btn-sm" onclick="chitietnhiemvu(` + id + `)">Sửa</button>
                     </td>`;
         content += `</tr>`;
     }
@@ -136,22 +141,27 @@ function update_onerow(data,stt) {
                 <td>
                     <button class="btn btn-success btn-sm" onclick="duyet_nhiemvu(` + id + `)">Duyệt</button>
                     <button class="btn btn-warning btn-sm" onclick="huy_nhiemvu(` + id + `)">Hủy</button>
+                    <button class="btn btn-primary btn-sm" onclick="chitietnhiemvu(` + id + `)">Sửa</button>
                 </td>\n`;
     else if (nhiemvu['trangthai'] == '1') content += `<td>Đang đăng</td>
                 <td>
                     <button class="btn btn-danger btn-sm" onclick="delete_nhiemvu(` + id + `)">Xóa</button>
+                    <button class="btn btn-primary btn-sm" onclick="chitietnhiemvu(` + id + `)">Sửa</button>
                 </td>`;
     else if (nhiemvu['trangthai'] == '-1') content += `<td>Bị hủy</td>
                 <td>
                     <button class="btn btn-danger btn-sm" onclick="delete_nhiemvu(` + id + `)">Xóa</button>
+                    <button class="btn btn-primary btn-sm" onclick="chitietnhiemvu(` + id + `)">Sửa</button>
                 </td>`;
     else if (nhiemvu['trangthai'] == '-2') content += `<td>Hết hạn</td>
                 <td>
                     <button class="btn btn-danger btn-sm" onclick="delete_nhiemvu(` + id + `)">Xóa</button>
+                    <button class="btn btn-primary btn-sm" onclick="chitietnhiemvu(` + id + `)">Sửa</button>
                 </td>`;
     else if (nhiemvu['trangthai'] == '-3') content += `<td>Đã hoàn thành</td>
                 <td>
                     <button class="btn btn-danger btn-sm" onclick="delete_nhiemvu(` + id + `)">Xóa</button>
+                    <button class="btn btn-primary btn-sm" onclick="chitietnhiemvu(` + id + `)">Sửa</button>
                 </td>`;
     return content;
 }
@@ -204,7 +214,7 @@ function delete_nhiemvu(id) {
 
             success: function (data, status) {
                 topage(current_page);
-                if (data['status']==1) alert("Xóa nhiemvu thành công!");
+                if (data['status']==1) alert("Xóa nhiệm vụ thành công!");
             },
             error: function (xhr, textStatus, errorThrown) {
                 console.log('loi ajax');

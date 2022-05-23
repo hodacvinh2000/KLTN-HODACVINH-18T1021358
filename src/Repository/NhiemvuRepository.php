@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Game;
 use App\Entity\Nhiemvu;
 use App\Entity\User;
+use App\Entity\Binhluannhiemvu;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\NonUniqueResultException;
@@ -24,6 +25,17 @@ class NhiemvuRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Nhiemvu::class);
         $this->entity = $this->getEntityManager();
+    }
+    public function getAll_game($id) {
+        return $this->createQueryBuilder('nv')
+        ->where('nv.game=:id')
+        ->setParameter('id',$id)->getQuery()->getResult();
+    }
+    public function getAll_id($id) {
+        return $this->createQueryBuilder('nv')
+            ->where('nv.user=:id')
+            ->setParameter('id',$id)
+            ->getQuery()->getResult();
     }
     // lay danh sach tat ca nhiem vu
     public function get_list($page,$num_row)
@@ -127,6 +139,7 @@ class NhiemvuRepository extends ServiceEntityRepository
         $this->_em->flush();
     }
     public function delete_nhiemvu($id) {
+        $this->entity->getRepository(Binhluannhiemvu::class)->delete_allcomment($id);
         $nhiemvu = $this->findOneBy(['id'=>$id]);
         $this->_em->remove($nhiemvu);
         $this->_em->flush();

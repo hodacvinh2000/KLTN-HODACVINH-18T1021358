@@ -124,7 +124,7 @@ function delete_tkgame(id) {
         });
     }
 }
-function show_password() {
+function button_password() {
     var password = document.getElementById('password');
     var button = document.getElementById('button-password');
     if (password.getAttribute('type') === 'password') {

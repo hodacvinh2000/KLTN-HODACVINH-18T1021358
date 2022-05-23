@@ -164,6 +164,7 @@ function delete_user(id) {
             success: function (data) {
                 topage(current_page);
                 if (data['status']==1) alert("Xóa user thành công!");
+                else alert("Không thể xóa người dùng này!");
             },
             error: function (xhr, textStatus, errorThrown) {
                 console.log('loi ajax');

@@ -28,7 +28,7 @@
             </thead>
             <tbody>
             {% for nhiemvu in list_nhiemvu %}
-                <tr id="nhiemvu{{ nhiemvu.id }}" onclick="chitietnhiemvu({{ nhiemvu.id }})">
+                <tr id="nhiemvu{{ nhiemvu.id }}">
                     <th scope="row">{{ loop.index }}</th>
                     <td>{{ nhiemvu.tieude| length > 20 ? nhiemvu.tieude | slice(0,20) ~ '...' : nhiemvu.tieude}}</td>
                     <td>{{ nhiemvu.user.hoten }}</td>
@@ -41,26 +41,31 @@
                         <td>
                             <button class="btn btn-success btn-sm" onclick="duyet_nhiemvu({{ nhiemvu.id }})">Duyệt</button>
                             <button class="btn btn-warning btn-sm" onclick="huy_nhiemvu({{ nhiemvu.id }})">Hủy</button>
+                            <button class="btn btn-primary btn-sm" onclick="chitietnhiemvu({{ nhiemvu.id }})">Sửa</button>
                         </td>
                     {% elseif nhiemvu.trangthai == -1 %}
                         <td>Bị hủy</td>
                         <td>
                             <button class="btn btn-danger btn-sm" onclick="delete_nhiemvu({{ nhiemvu.id }})">Xóa</button>
+                            <button class="btn btn-primary btn-sm" onclick="chitietnhiemvu({{ nhiemvu.id }})">Sửa</button>
                         </td>
                     {% elseif nhiemvu.trangthai == -2 %}
                         <td>Hết hạn</td>
                         <td>
                             <button class="btn btn-danger btn-sm" onclick="delete_nhiemvu({{ nhiemvu.id }})">Xóa</button>
+                            <button class="btn btn-primary btn-sm" onclick="chitietnhiemvu({{ nhiemvu.id }})">Sửa</button>
                         </td>
                     {% elseif nhiemvu.trangthai == 1 %}
                         <td>Đang đăng</td>
                         <td>
                             <button class="btn btn-danger btn-sm" onclick="delete_nhiemvu({{ nhiemvu.id }})">Xóa</button>
+                            <button class="btn btn-primary btn-sm" onclick="chitietnhiemvu({{ nhiemvu.id }})">Sửa</button>
                         </td>
                     {% elseif nhiemvu.trangthai == -3 %}
                         <td>Đã hoàn thành</td>
                         <td>
                             <button class="btn btn-danger btn-sm" onclick="delete_nhiemvu({{ nhiemvu.id }})">Xóa</button>
+                            <button class="btn btn-primary btn-sm" onclick="chitietnhiemvu({{ nhiemvu.id }})">Sửa</button>
                         </td>
                     {% endif %}
                 </tr>

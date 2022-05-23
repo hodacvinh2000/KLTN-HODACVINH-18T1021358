@@ -57,14 +57,14 @@
             <li class="nav-item active">
                 <a class="nav-link" href="/">Trang chủ</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="{{ path('list_account') }}">Mua acc game</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="{{ path('card-game') }}">Mua card game</a>
             </li>
             {% if app.session.get('current_user')!=null %}
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link " href="{{ path('my_mission') }}">Nhiệm vụ của tôi</a>
             </li>
             {% endif %}

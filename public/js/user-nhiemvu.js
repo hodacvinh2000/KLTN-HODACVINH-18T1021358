@@ -50,42 +50,44 @@ function submit_phanhoi(id,click) {
     if (event.keyCode == 13 || event.which == 13 || click == 1) {
         let text = $(form_id).val();
         // trả lời bình luận
-        $.ajax({
-            url: `/traloibinhluan/` + id,
-            data: {content: text, current_user_id: current_user_id},
-            type: `POST`,
-            dataType: `json`,
-            async: true,
-
-            success: function (data, status) {
-                console.log(data['sophanhoi_parent']);
-                if (data['sophanhoi_parent'] == 1) {
-                    $('#xemphanhoi'+id).html(`<a href="javascript:void(0);" style="margin-left: -20px;" onclick="xem_phanhoi(`+ id +`)">
-                                    <i class="fas fa-reply" style="transform: rotate(180deg);"></i>
-                                    Ẩn phản hồi
-                                </a>`);
-                    $('#xemphanhoi'+id).attr('data-text','Ẩn phản hồi');
+        if (text != '' && text != null) {
+            $.ajax({
+                url: `/traloibinhluan/` + id,
+                data: {content: text, current_user_id: current_user_id},
+                type: `POST`,
+                dataType: `json`,
+                async: true,
+    
+                success: function (data, status) {
+                    console.log(data['sophanhoi_parent']);
+                    if (data['sophanhoi_parent'] == 1) {
+                        $('#xemphanhoi'+id).html(`<a href="javascript:void(0);" style="margin-left: -20px;" onclick="xem_phanhoi(`+ id +`)">
+                                        <i class="fas fa-reply" style="transform: rotate(180deg);"></i>
+                                        Ẩn phản hồi
+                                    </a>`);
+                        $('#xemphanhoi'+id).attr('data-text','Ẩn phản hồi');
+                    }
+                    else if (data['sophanhoi_parent'] > 1 && $('#xemphanhoi'+id).attr('data-text')=='Xem phản hồi') {
+                        $('#xemphanhoi'+id).html(`<a href="javascript:void(0);" style="margin-left: -20px;" onclick="xem_phanhoi(`+ id +`)">
+                                        <i class="fas fa-reply" style="transform: rotate(180deg);"></i>
+                                        Xem thêm phản hồi
+                                    </a>`);
+                    }
+                    $(form_id).val("");
+                    let content = add_phanhoi(data);
+                    if ($('#phanhoi'+id).html() == "") {
+                        $('#phanhoi' + id).html(content);
+                    }
+                    else {
+                        $('#phanhoi' + id).append(content);
+                    }
+                },
+    
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log('Lỗi ajax');
                 }
-                else if (data['sophanhoi_parent'] > 1 && $('#xemphanhoi'+id).attr('data-text')=='Xem phản hồi') {
-                    $('#xemphanhoi'+id).html(`<a href="javascript:void(0);" style="margin-left: -20px;" onclick="xem_phanhoi(`+ id +`)">
-                                    <i class="fas fa-reply" style="transform: rotate(180deg);"></i>
-                                    Xem thêm phản hồi
-                                </a>`);
-                }
-                $(form_id).val("");
-                let content = add_phanhoi(data);
-                if ($('#phanhoi'+id).html() == "") {
-                    $('#phanhoi' + id).html(content);
-                }
-                else {
-                    $('#phanhoi' + id).append(content);
-                }
-            },
-
-            error: function (xhr, textStatus, errorThrown) {
-                console.log('Lỗi ajax');
-            }
-        });
+            });
+        }
     }
 }
 function binhluan(nhiemvu_id,click) {
@@ -93,28 +95,30 @@ function binhluan(nhiemvu_id,click) {
     if (event.keyCode == 13 || click == 1) {
         let text = $('#form-binhluan').val();
         // trả lời bình luận
-        $.ajax({
-            url: `/binhluan/` + nhiemvu_id,
-            data: {content: text, current_user_id: current_user_id},
-            type: `POST`,
-            dataType: `json`,
-            async: true,
-
-            success: function (data, status) {
-                $('#form-binhluan').val("");
-                let content = add_binhluan(data);
-                if ($('#list_binhluan').html() == "") {
-                    $('#list_binhluan').html(content);
+        if (text != '' && text != null) {
+            $.ajax({
+                url: `/binhluan/` + nhiemvu_id,
+                data: {content: text, current_user_id: current_user_id},
+                type: `POST`,
+                dataType: `json`,
+                async: true,
+    
+                success: function (data, status) {
+                    $('#form-binhluan').val("");
+                    let content = add_binhluan(data);
+                    if ($('#list_binhluan').html() == "") {
+                        $('#list_binhluan').html(content);
+                    }
+                    else {
+                        $('#list_binhluan').append(content);
+                    }
+                },
+    
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log('Lỗi ajax');
                 }
-                else {
-                    $('#list_binhluan').append(content);
-                }
-            },
-
-            error: function (xhr, textStatus, errorThrown) {
-                console.log('Lỗi ajax');
-            }
-        });
+            });
+        }
     }
 }
 function add_binhluan(phanhoi,status) {
@@ -141,7 +145,7 @@ function add_phanhoi(phanhoi) {
                         <br>
                         <p style="margin: 0px 0px 0px 10px;">`+ phanhoi['binhluan'] +`</p>
                         <a style="margin-left: 10px;" href="javascript:void(0);" onclick="show_form_traloi(`+ phanhoi['id'] +`,'`+ phanhoi['hoten'] +`')">Trả lời</a>`;
-    if ($('#current_user').val() == phanhoi['nguoiduocphanhoi']) {
+    if ($('#current_user').val() == phanhoi['idnguoibinhluan']) {
         content += `<a style="margin-left: 10px;" href="javascript:void(0);" onclick="xoa_binhluan(`+ phanhoi['id'] +`)">Xóa</a>`;
     }
     content += `<div id="form-traloi`+ phanhoi['id'] +`"></div>`;
